@@ -18,14 +18,12 @@ const API_URL = import.meta.env.VITE_API_URL;
 function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('darkMode');
     if (savedTheme !== null) {
       setDarkMode(JSON.parse(savedTheme));
     }
-    checkCurrentUser();
   }, []);
 
   useEffect(() => {
@@ -39,29 +37,13 @@ function App() {
     }
   }, [darkMode]);
 
-  const checkCurrentUser = async () => {
-    try {
-      const response = await fetch(`${API_URL}/current-user`, {
-        credentials: 'include'
-      });
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-      }
-    } catch (error) {
-      console.error('Error checking user:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleLogin = (userData) => {
     setUser(userData);
   };
 
   const handleLogout = async () => {
     try {
-      await fetch(`${API_URL}/logout`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/logout`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -74,10 +56,6 @@ function App() {
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
-
-  if (loading) {
-    return <div className="loading">Loading...</div>;
-  }
 
   if (!user) {
     return (
