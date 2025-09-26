@@ -13,8 +13,6 @@ import WorkoutForm from './components/WorkoutForm';
 import Profile from './pages/Profile';
 import './App.css';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [user, setUser] = useState(null);
