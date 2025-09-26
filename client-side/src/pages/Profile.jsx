@@ -17,19 +17,26 @@ function Profile({ user }) {
 
   const fetchUserData = async () => {
     try {
+      console.log('Fetching user data...');
       const [workoutsRes, exercisesRes] = await Promise.all([
         fetch(`${API_URL}/my-workouts`, { credentials: 'include' }),
         fetch(`${API_URL}/my-exercises`, { credentials: 'include' })
       ]);
 
+      console.log('Workouts response status:', workoutsRes.status);
+      console.log('Exercises response status:', exercisesRes.status);
+
       if (workoutsRes.ok && exercisesRes.ok) {
         const workoutsData = await workoutsRes.json();
         const exercisesData = await exercisesRes.json();
+        
+        console.log('Workouts data:', workoutsData);
+        console.log('Exercises data:', exercisesData);
 
         setUserWorkouts(Array.isArray(workoutsData) ? workoutsData : []);
         setUserExercises(Array.isArray(exercisesData) ? exercisesData : []);
       } else {
-        console.error('Failed to fetch user data');
+        console.error('Failed to fetch user data - workouts:', workoutsRes.status, 'exercises:', exercisesRes.status);
         setUserWorkouts([]);
         setUserExercises([]);
       }

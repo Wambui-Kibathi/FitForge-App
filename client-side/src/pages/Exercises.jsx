@@ -49,6 +49,7 @@ function Exercises({ user }) {
 
   const addToProfile = async (exerciseId, type) => {
     try {
+      console.log('Adding exercise to profile:', { user_id: user?.id, exercise_id: exerciseId });
       const response = await fetch(`${API_URL}/user-exercises`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -61,10 +62,15 @@ function Exercises({ user }) {
         }),
       });
       
+      console.log('Add exercise response status:', response.status);
+      
       if (response.ok) {
+        const result = await response.json();
+        console.log('Exercise added successfully:', result);
         alert('Exercise added to your profile!');
       } else {
         const error = await response.json();
+        console.error('Error adding exercise:', error);
         alert(error.error || 'Failed to add exercise to profile');
       }
     } catch (error) {
