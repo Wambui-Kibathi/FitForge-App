@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required')
@@ -20,22 +20,39 @@ function Auth({ onLogin }) {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const endpoint = isLogin ? '/login' : '/register';
+      console.log('Submitting to:', `${API_URL}${endpoint}`);
+      console.log('Data:', values);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(values),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
+      console.log('Response status:', response.status);
 
       if (response.ok) {
         const user = await response.json();
+        console.log('Success:', user);
         onLogin(user);
       } else {
         const error = await response.json();
+        console.log('Error response:', error);
         alert(error.error || (isLogin ? 'Login failed' : 'Registration failed'));
       }
     } catch (error) {
-      console.error('Auth error:', error);
+      console.error('Full error:', error);
+      if (error.name === 'AbortError') {
+        alert('Request timed out. Please check your connection and try again.');
+      } else {
+        alert('Network error: ' + error.message);
+      }
     } finally {
       setSubmitting(false);
     }
