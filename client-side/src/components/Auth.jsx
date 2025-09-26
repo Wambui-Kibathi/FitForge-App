@@ -4,7 +4,6 @@ import * as Yup from 'yup';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://fitforge-app-backend-1.onrender.com';
 console.log('API_URL:', API_URL);
-console.log('Environment variables:', import.meta.env);
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required')
