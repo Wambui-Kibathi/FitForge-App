@@ -41,13 +41,24 @@ function App() {
 
   const handleLogout = async () => {
     try {
+      const token = localStorage.getItem('token');
+      const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` })
+      };
+      
       await fetch(`${import.meta.env.VITE_API_URL}/logout`, {
         method: 'POST',
+        headers,
         credentials: 'include'
       });
+      
+      localStorage.removeItem('token');
       setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
+      localStorage.removeItem('token');
+      setUser(null);
     }
   };
 

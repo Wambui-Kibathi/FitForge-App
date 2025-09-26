@@ -39,8 +39,14 @@ function Auth({ onLogin }) {
       console.log('Response status:', response.status);
 
       if (response.ok) {
-        const user = await response.json();
-        console.log('Success:', user);
+        const data = await response.json();
+        console.log('Success:', data);
+        
+        // Store token if present
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          console.log('Token stored:', data.token);
+        }
         
         // If registration, automatically log in the user
         if (!isLogin) {
@@ -60,20 +66,26 @@ function Auth({ onLogin }) {
             clearTimeout(loginTimeoutId);
             
             if (loginResponse.ok) {
-              const loggedInUser = await loginResponse.json();
-              console.log('Auto-login successful:', loggedInUser);
-              onLogin(loggedInUser);
+              const loginData = await loginResponse.json();
+              console.log('Auto-login successful:', loginData);
+              
+              // Store login token
+              if (loginData.token) {
+                localStorage.setItem('token', loginData.token);
+              }
+              
+              onLogin(loginData.user || loginData);
             } else {
               console.log('Auto-login failed, using registration data');
-              onLogin(user);
+              onLogin(data.user || data);
             }
           } catch (loginError) {
             clearTimeout(loginTimeoutId);
             console.log('Auto-login error, using registration data:', loginError);
-            onLogin(user);
+            onLogin(data.user || data);
           }
         } else {
-          onLogin(user);
+          onLogin(data.user || data);
         }
       } else {
         console.log('Error response status:', response.status);

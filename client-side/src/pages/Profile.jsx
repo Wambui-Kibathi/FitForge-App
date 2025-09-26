@@ -18,9 +18,17 @@ function Profile({ user }) {
   const fetchUserData = async () => {
     try {
       console.log('Fetching user data...');
+      const token = localStorage.getItem('token');
+      console.log('Using token:', token);
+      
+      const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` })
+      };
+      
       const [workoutsRes, exercisesRes] = await Promise.all([
-        fetch(`${API_URL}/my-workouts`, { credentials: 'include' }),
-        fetch(`${API_URL}/my-exercises`, { credentials: 'include' })
+        fetch(`${API_URL}/my-workouts`, { headers, credentials: 'include' }),
+        fetch(`${API_URL}/my-exercises`, { headers, credentials: 'include' })
       ]);
 
       console.log('Workouts response status:', workoutsRes.status);

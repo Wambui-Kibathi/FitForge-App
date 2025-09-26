@@ -50,9 +50,16 @@ function Exercises({ user }) {
   const addToProfile = async (exerciseId, type) => {
     try {
       console.log('Adding exercise to profile:', { user_id: user?.id, exercise_id: exerciseId });
+      const token = localStorage.getItem('token');
+      
+      const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` })
+      };
+      
       const response = await fetch(`${API_URL}/user-exercises`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         credentials: 'include',
         body: JSON.stringify({
           user_id: user?.id,
