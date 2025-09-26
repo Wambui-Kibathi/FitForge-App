@@ -13,6 +13,8 @@ import WorkoutForm from './components/WorkoutForm';
 import Profile from './pages/Profile';
 import './App.css';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [user, setUser] = useState(null);
@@ -39,7 +41,7 @@ function App() {
 
   const checkCurrentUser = async () => {
     try {
-      const response = await fetch('http://localhost:5001/current-user', {
+      const response = await fetch(`${API_URL}/current-user`, {
         credentials: 'include'
       });
       if (response.ok) {
@@ -59,7 +61,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:5001/logout', {
+      await fetch(`${API_URL}/logout`, {
         method: 'POST',
         credentials: 'include'
       });
