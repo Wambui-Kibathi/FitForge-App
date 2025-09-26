@@ -29,7 +29,7 @@ function Auth({ onLogin }) {
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        ...(isLogin && { credentials: 'include' }),
         body: JSON.stringify(values),
         signal: controller.signal
       });
@@ -42,7 +42,26 @@ function Auth({ onLogin }) {
         console.log('Success:', user);
         onLogin(user);
       } else {
-        const error = await response.json();
+        console.log('Error response status:', response.status);
+        if (!isLogin && response.status === 404) {
+          // Fallback: try /users endpoint for registration
+          console.log('Trying /users endpoint as fallback');
+          const fallbackResponse = await fetch(`${API_URL}/users`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(values),
+            signal: controller.signal
+          });
+          
+          if (fallbackResponse.ok) {
+            const user = await fallbackResponse.json();
+            console.log('Fallback success:', user);
+            onLogin(user);
+            return;
+          }
+        }
+        
+        const error = await response.json().catch(() => ({ error: 'Unknown error' }));
         console.log('Error response:', error);
         alert(error.error || (isLogin ? 'Login failed' : 'Registration failed'));
       }
