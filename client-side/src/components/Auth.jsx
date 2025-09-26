@@ -45,19 +45,31 @@ function Auth({ onLogin }) {
         // If registration, automatically log in the user
         if (!isLogin) {
           console.log('Registration successful, logging in...');
-          const loginResponse = await fetch(`${API_URL}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ email: values.email }),
-          });
+          const loginController = new AbortController();
+          const loginTimeoutId = setTimeout(() => loginController.abort(), 10000);
           
-          if (loginResponse.ok) {
-            const loggedInUser = await loginResponse.json();
-            console.log('Auto-login successful:', loggedInUser);
-            onLogin(loggedInUser);
-          } else {
-            console.log('Auto-login failed, using registration data');
+          try {
+            const loginResponse = await fetch(`${API_URL}/login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ email: values.email }),
+              signal: loginController.signal
+            });
+            
+            clearTimeout(loginTimeoutId);
+            
+            if (loginResponse.ok) {
+              const loggedInUser = await loginResponse.json();
+              console.log('Auto-login successful:', loggedInUser);
+              onLogin(loggedInUser);
+            } else {
+              console.log('Auto-login failed, using registration data');
+              onLogin(user);
+            }
+          } catch (loginError) {
+            clearTimeout(loginTimeoutId);
+            console.log('Auto-login error, using registration data:', loginError);
             onLogin(user);
           }
         } else {
