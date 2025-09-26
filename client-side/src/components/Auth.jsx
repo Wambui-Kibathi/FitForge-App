@@ -41,7 +41,28 @@ function Auth({ onLogin }) {
       if (response.ok) {
         const user = await response.json();
         console.log('Success:', user);
-        onLogin(user);
+        
+        // If registration, automatically log in the user
+        if (!isLogin) {
+          console.log('Registration successful, logging in...');
+          const loginResponse = await fetch(`${API_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ email: values.email }),
+          });
+          
+          if (loginResponse.ok) {
+            const loggedInUser = await loginResponse.json();
+            console.log('Auto-login successful:', loggedInUser);
+            onLogin(loggedInUser);
+          } else {
+            console.log('Auto-login failed, using registration data');
+            onLogin(user);
+          }
+        } else {
+          onLogin(user);
+        }
       } else {
         console.log('Error response status:', response.status);
         if (!isLogin && response.status === 404) {
