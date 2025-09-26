@@ -19,12 +19,15 @@ function Profile({ user }) {
     try {
       console.log('Fetching user data...');
       const token = localStorage.getItem('token');
-      console.log('Using token:', token);
+      console.log('Token from localStorage:', token);
+      console.log('All localStorage items:', { ...localStorage });
       
       const headers = {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
       };
+      
+      console.log('Request headers:', headers);
       
       const [workoutsRes, exercisesRes] = await Promise.all([
         fetch(`${API_URL}/my-workouts`, { headers, credentials: 'include' }),
@@ -65,8 +68,15 @@ function Profile({ user }) {
   const removeExercise = async (userExerciseId) => {
     if (window.confirm('Remove this exercise from your profile?')) {
       try {
+        const token = localStorage.getItem('token');
+        const headers = {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        };
+        
         const response = await fetch(`${API_URL}/user-exercises/${userExerciseId}`, {
           method: 'DELETE',
+          headers,
           credentials: 'include'
         });
         
@@ -84,8 +94,15 @@ function Profile({ user }) {
   const removeWorkout = async (workoutId) => {
     if (window.confirm('Remove this workout from your profile?')) {
       try {
+        const token = localStorage.getItem('token');
+        const headers = {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        };
+        
         const response = await fetch(`${API_URL}/workouts/${workoutId}`, {
           method: 'DELETE',
+          headers,
           credentials: 'include'
         });
         

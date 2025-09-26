@@ -6,12 +6,14 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://fitforge-app-backend-1.
 console.log('API_URL:', API_URL);
 
 const LoginSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Email is required')
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  password: Yup.string().min(6, 'Password too short').required('Password is required')
 });
 
 const RegisterSchema = Yup.object().shape({
   name: Yup.string().min(2, 'Name too short').required('Name is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
+  password: Yup.string().min(6, 'Password too short').required('Password is required'),
   fitness_level: Yup.string().required('Fitness level is required')
 });
 
@@ -30,7 +32,7 @@ function Auth({ onLogin }) {
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        ...(isLogin && { credentials: 'include' }),
+        credentials: 'include',
         body: JSON.stringify(values),
         signal: controller.signal
       });
@@ -40,12 +42,17 @@ function Auth({ onLogin }) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Success:', data);
+        console.log('Success - Full response data:', data);
+        console.log('Token in response:', data.token);
+        console.log('Access token in response:', data.access_token);
         
-        // Store token if present
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-          console.log('Token stored:', data.token);
+        // Store token if present (try different token field names)
+        const token = data.token || data.access_token || data.authToken;
+        if (token) {
+          localStorage.setItem('token', token);
+          console.log('Token stored:', token);
+        } else {
+          console.log('No token found in response');
         }
         
         // If registration, automatically log in the user
@@ -59,7 +66,7 @@ function Auth({ onLogin }) {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               credentials: 'include',
-              body: JSON.stringify({ email: values.email }),
+              body: JSON.stringify({ email: values.email, password: values.password }),
               signal: loginController.signal
             });
             
@@ -129,7 +136,7 @@ function Auth({ onLogin }) {
         <h2>{isLogin ? 'Login' : 'Register'}</h2>
         
         <Formik
-          initialValues={{ name: '', email: '', fitness_level: 'Beginner' }}
+          initialValues={{ name: '', email: '', password: '', fitness_level: 'Beginner' }}
           validationSchema={isLogin ? LoginSchema : RegisterSchema}
           onSubmit={handleSubmit}
           enableReinitialize
@@ -148,6 +155,12 @@ function Auth({ onLogin }) {
                 <label className="form-label">Email</label>
                 <Field name="email" type="email" className="form-control" />
                 <ErrorMessage name="email" component="div" className="error-message" />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Password</label>
+                <Field name="password" type="password" className="form-control" />
+                <ErrorMessage name="password" component="div" className="error-message" />
               </div>
 
               {!isLogin && (

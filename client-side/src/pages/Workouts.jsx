@@ -77,8 +77,7 @@ function Workouts({ user }) {
           name: `${originalWorkout.name} (My Copy)`,
           description: originalWorkout.description,
           duration: originalWorkout.duration,
-          instructor_id: originalWorkout.instructor_id,
-          user_id: user?.id
+          instructor_id: originalWorkout.instructor_id
         }),
       });
       

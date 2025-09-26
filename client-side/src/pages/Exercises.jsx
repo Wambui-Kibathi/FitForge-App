@@ -62,7 +62,6 @@ function Exercises({ user }) {
         headers,
         credentials: 'include',
         body: JSON.stringify({
-          user_id: user?.id,
           exercise_id: exerciseId,
           personal_record: 0,
           notes: 'Added to my profile'
