@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const UserSchema = Yup.object().shape({
   name: Yup.string()
     .min(2, 'Name must be at least 2 characters')
@@ -34,7 +36,7 @@ function UserForm() {
 
   const fetchUser = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/users/${id}`);
+      const response = await fetch(`${API_URL}/users/${id}`);
       const user = await response.json();
       setInitialValues({
         name: user.name,
@@ -48,7 +50,7 @@ function UserForm() {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const url = isEdit ? `http://localhost:5001/users/${id}` : 'http://localhost:5001/users';
+      const url = isEdit ? `${API_URL}/users/${id}` : `${API_URL}/users`;
       const method = isEdit ? 'PATCH' : 'POST';
       
       const response = await fetch(url, {

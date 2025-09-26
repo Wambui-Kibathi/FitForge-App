@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required')
 });
@@ -18,7 +20,7 @@ function Auth({ onLogin }) {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const endpoint = isLogin ? '/login' : '/register';
-      const response = await fetch(`http://localhost:5001${endpoint}`, {
+      const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

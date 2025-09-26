@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ExerciseSchema = Yup.object().shape({
   name: Yup.string()
     .min(2, 'Name must be at least 2 characters')
@@ -42,7 +44,7 @@ function ExerciseForm() {
 
   const fetchExercise = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/exercises/${id}`);
+      const response = await fetch(`${API_URL}/exercises/${id}`);
       const exercise = await response.json();
       setInitialValues({
         name: exercise.name,
@@ -58,7 +60,7 @@ function ExerciseForm() {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const url = isEdit ? `http://localhost:5001/exercises/${id}` : 'http://localhost:5001/exercises';
+      const url = isEdit ? `${API_URL}/exercises/${id}` : `${API_URL}/exercises`;
       const method = isEdit ? 'PATCH' : 'POST';
       
       const response = await fetch(url, {

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ProfileSchema = Yup.object().shape({
   name: Yup.string().min(2, 'Name too short').required('Name is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
@@ -11,7 +13,7 @@ const ProfileSchema = Yup.object().shape({
 function EditProfile({ user, onUpdate, onCancel }) {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const response = await fetch(`http://localhost:5001/users/${user.id}`, {
+      const response = await fetch(`${API_URL}/users/${user.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
