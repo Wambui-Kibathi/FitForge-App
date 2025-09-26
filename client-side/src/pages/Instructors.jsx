@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Instructors({ user: currentUser }) {
   const [instructors, setInstructors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +14,7 @@ function Instructors({ user: currentUser }) {
 
   const fetchInstructors = async () => {
     try {
-      const response = await fetch('http://localhost:5001/instructors');
+      const response = await fetch(`${API_URL}/instructors`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -33,7 +35,7 @@ function Instructors({ user: currentUser }) {
   const deleteInstructor = async (id) => {
     if (window.confirm('Are you sure you want to delete this instructor?')) {
       try {
-        await fetch(`http://localhost:5001/instructors/${id}`, {
+        await fetch(`${API_URL}/instructors/${id}`, {
           method: 'DELETE',
         });
         fetchInstructors();
