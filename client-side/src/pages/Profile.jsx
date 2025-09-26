@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { FaUser, FaEdit, FaDumbbell, FaTrophy } from 'react-icons/fa';
 import EditProfile from '../components/EditProfile';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Profile({ user }) {
   const [userWorkouts, setUserWorkouts] = useState([]);
   const [userExercises, setUserExercises] = useState([]);
@@ -16,8 +18,8 @@ function Profile({ user }) {
   const fetchUserData = async () => {
     try {
       const [workoutsRes, exercisesRes] = await Promise.all([
-        fetch('http://localhost:5001/my-workouts', { credentials: 'include' }),
-        fetch('http://localhost:5001/my-exercises', { credentials: 'include' })
+        fetch(`${API_URL}/my-workouts`, { credentials: 'include' }),
+        fetch(`${API_URL}/my-exercises`, { credentials: 'include' })
       ]);
 
       if (workoutsRes.ok && exercisesRes.ok) {
@@ -48,13 +50,13 @@ function Profile({ user }) {
   const removeExercise = async (userExerciseId) => {
     if (window.confirm('Remove this exercise from your profile?')) {
       try {
-        const response = await fetch(`http://localhost:5001/user-exercises/${userExerciseId}`, {
+        const response = await fetch(`${API_URL}/user-exercises/${userExerciseId}`, {
           method: 'DELETE',
           credentials: 'include'
         });
         
         if (response.ok) {
-          fetchUserData(); // Refresh data
+          fetchUserData(); 
         } else {
           alert('Failed to remove exercise');
         }
@@ -67,13 +69,13 @@ function Profile({ user }) {
   const removeWorkout = async (workoutId) => {
     if (window.confirm('Remove this workout from your profile?')) {
       try {
-        const response = await fetch(`http://localhost:5001/workouts/${workoutId}`, {
+        const response = await fetch(`${API_URL}/workouts/${workoutId}`, {
           method: 'DELETE',
           credentials: 'include'
         });
         
         if (response.ok) {
-          fetchUserData(); // Refresh data
+          fetchUserData(); 
         } else {
           alert('Failed to remove workout');
         }

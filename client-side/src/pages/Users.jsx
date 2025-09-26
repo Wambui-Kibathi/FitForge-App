@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Users({ user: currentUser }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +14,7 @@ function Users({ user: currentUser }) {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:5001/users');
+      const response = await fetch(`${API_URL}/users`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -35,7 +37,7 @@ function Users({ user: currentUser }) {
   const deleteUser = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await fetch(`http://localhost:5001/users/${id}`, {
+        await fetch(`${API_URL}/users/${id}`, {
           method: 'DELETE',
         });
         fetchUsers();

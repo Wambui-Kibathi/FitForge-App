@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaClock } from 'react-icons/fa';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Workouts({ user }) {
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +14,7 @@ function Workouts({ user }) {
 
   const fetchWorkouts = async () => {
     try {
-      const response = await fetch('http://localhost:5001/workouts');
+      const response = await fetch(`${API_URL}/workouts`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -35,7 +37,7 @@ function Workouts({ user }) {
   const deleteWorkout = async (id) => {
     if (window.confirm('Are you sure you want to delete this workout?')) {
       try {
-        await fetch(`http://localhost:5001/workouts/${id}`, {
+        await fetch(`${API_URL}/workouts/${id}`, {
           method: 'DELETE',
         });
         fetchWorkouts();
@@ -47,16 +49,14 @@ function Workouts({ user }) {
 
   const addWorkoutToProfile = async (workoutId) => {
     try {
-      // Check if user already has this workout
-      const checkResponse = await fetch('http://localhost:5001/my-workouts', {
+      const checkResponse = await fetch(`${API_URL}/my-workouts`, {
         credentials: 'include'
       });
       
       if (checkResponse.ok) {
         const userWorkouts = await checkResponse.json();
         const originalWorkout = workouts.find(w => w.id === workoutId);
-        
-        // Check if user already has a workout with the same original name
+    
         const alreadyHas = userWorkouts.some(w => 
           w.name === originalWorkout.name || 
           w.name === `${originalWorkout.name} (My Copy)`
@@ -67,10 +67,9 @@ function Workouts({ user }) {
           return;
         }
       }
-      
-      // Create a copy of the workout for the current user
+    
       const originalWorkout = workouts.find(w => w.id === workoutId);
-      const response = await fetch('http://localhost:5001/workouts', {
+      const response = await fetch(`${API_URL}/workouts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

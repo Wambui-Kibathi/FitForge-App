@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Exercises({ user }) {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +14,7 @@ function Exercises({ user }) {
 
   const fetchExercises = async () => {
     try {
-      const response = await fetch('http://localhost:5001/exercises');
+      const response = await fetch(`${API_URL}/exercises`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -35,7 +37,7 @@ function Exercises({ user }) {
   const deleteExercise = async (id) => {
     if (window.confirm('Are you sure you want to delete this exercise?')) {
       try {
-        await fetch(`http://localhost:5001/exercises/${id}`, {
+        await fetch(`${API_URL}/exercises/${id}`, {
           method: 'DELETE',
         });
         fetchExercises();
@@ -47,7 +49,7 @@ function Exercises({ user }) {
 
   const addToProfile = async (exerciseId, type) => {
     try {
-      const response = await fetch('http://localhost:5001/user-exercises', {
+      const response = await fetch(`${API_URL}/user-exercises`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
