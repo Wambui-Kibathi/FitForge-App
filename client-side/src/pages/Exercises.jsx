@@ -14,7 +14,7 @@ function Exercises({ user }) {
 
   const fetchExercises = async () => {
     try {
-      const response = await fetch(`${API_URL}/exercises`);
+      const response = await fetch(`${API_URL}/exercises`, { credentials: 'include' });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -39,6 +39,7 @@ function Exercises({ user }) {
       try {
         await fetch(`${API_URL}/exercises/${id}`, {
           method: 'DELETE',
+          credentials: 'include'
         });
         fetchExercises();
       } catch (error) {

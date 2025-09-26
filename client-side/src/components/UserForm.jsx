@@ -36,7 +36,7 @@ function UserForm() {
 
   const fetchUser = async () => {
     try {
-      const response = await fetch(`${API_URL}/users/${id}`);
+      const response = await fetch(`${API_URL}/users/${id}`, { credentials: 'include' });
       const user = await response.json();
       setInitialValues({
         name: user.name,
@@ -58,6 +58,7 @@ function UserForm() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(values),
       });
 

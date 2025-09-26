@@ -14,7 +14,7 @@ function Workouts({ user }) {
 
   const fetchWorkouts = async () => {
     try {
-      const response = await fetch(`${API_URL}/workouts`);
+      const response = await fetch(`${API_URL}/workouts`, { credentials: 'include' });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -39,6 +39,7 @@ function Workouts({ user }) {
       try {
         await fetch(`${API_URL}/workouts/${id}`, {
           method: 'DELETE',
+          credentials: 'include'
         });
         fetchWorkouts();
       } catch (error) {

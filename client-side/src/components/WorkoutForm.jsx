@@ -41,7 +41,7 @@ function WorkoutForm() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`${API_URL}/users`);
+      const response = await fetch(`${API_URL}/users`, { credentials: 'include' });
       const data = await response.json();
       setUsers(data);
       if (!isEdit && data.length > 0) {
@@ -54,7 +54,7 @@ function WorkoutForm() {
 
   const fetchWorkout = async () => {
     try {
-      const response = await fetch(`${API_URL}/workouts/${id}`);
+      const response = await fetch(`${API_URL}/workouts/${id}`, { credentials: 'include' });
       const workout = await response.json();
       setInitialValues({
         name: workout.name,
@@ -77,6 +77,7 @@ function WorkoutForm() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(values),
       });
 

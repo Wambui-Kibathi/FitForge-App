@@ -44,7 +44,7 @@ function ExerciseForm() {
 
   const fetchExercise = async () => {
     try {
-      const response = await fetch(`${API_URL}/exercises/${id}`);
+      const response = await fetch(`${API_URL}/exercises/${id}`, { credentials: 'include' });
       const exercise = await response.json();
       setInitialValues({
         name: exercise.name,
@@ -68,6 +68,7 @@ function ExerciseForm() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(values),
       });
 
