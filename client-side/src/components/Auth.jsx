@@ -46,7 +46,7 @@ function Auth({ onLogin }) {
         console.log('Token in response:', data.token);
         console.log('Access token in response:', data.access_token);
         
-        // Store token if present (try different token field names)
+        // Store token 
         const token = data.token || data.access_token || data.authToken;
         if (token) {
           localStorage.setItem('token', token);
@@ -55,7 +55,7 @@ function Auth({ onLogin }) {
           console.log('No token found in response');
         }
         
-        // If registration, automatically log in the user
+        // If registered, automatically log in the user
         if (!isLogin) {
           console.log('Registration successful, logging in...');
           const loginController = new AbortController();
@@ -97,8 +97,6 @@ function Auth({ onLogin }) {
       } else {
         console.log('Error response status:', response.status);
         if (!isLogin && response.status === 404) {
-          // Fallback: try /users endpoint for registration
-          console.log('Trying /users endpoint as fallback');
           const fallbackResponse = await fetch(`${API_URL}/users`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

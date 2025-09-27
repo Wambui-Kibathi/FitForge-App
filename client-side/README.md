@@ -2,9 +2,13 @@
 
 A full-stack fitness tracking application built with React frontend and Flask backend. Features user authentication, personal workout tracking, and a comprehensive exercise library with a modern dark theme and responsive design.
 
+## Live Application
+- **Frontend**: https://fitforge-app.onrender.com
+- **Backend API**: https://fitforge-app-backend-1.onrender.com
+
 ## Features
 
-- **User Authentication**: Register and login system with session management
+- **User Authentication**: Complete register/login system with password validation and session management
 - **User Profiles**: Personal profile pages with account details and statistics
 - **User Management**: View all users in the community (Formula 1 drivers)
 - **Exercise Library**: Comprehensive database of exercises with categories, muscle groups, and difficulty levels
@@ -15,6 +19,8 @@ A full-stack fitness tracking application built with React frontend and Flask ba
 - **Dark/Light Theme**: Toggle between dark and light themes (dark mode default)
 - **Responsive Design**: Mobile-first design with hamburger menu navigation
 - **Modern UI**: Dark grey/black theme with green accent colors
+- **Session-Based Authentication**: Secure cookie-based authentication with credentials
+- **Production Deployment**: Fully deployed backend and frontend with environment configuration
 
 ## Tech Stack
 
@@ -33,14 +39,16 @@ A full-stack fitness tracking application built with React frontend and Flask ba
 - Flask-Migrate (database migrations)
 - Flask-CORS (cross-origin requests)
 - SQLite database
-- Session-based authentication
+- Session-based authentication with password hashing
+- JWT token support
 - Pipenv (dependency management)
+- **Deployed on Render**: https://fitforge-app-backend-1.onrender.com
 
 ## Project Structure
 
 ```
-FitForge-Workout-Planner/
-├── client-side/          # React frontend
+FitForge-App/
+├── client-side/          # React frontend (this repository)
 │   ├── src/
 │   │   ├── components/   # Reusable components (Navbar, Auth, Forms)
 │   │   ├── pages/        # Page components (Home, Users, Exercises, etc.)
@@ -49,22 +57,24 @@ FitForge-Workout-Planner/
 │   │   ├── App.css       # Global styles and theme variables
 │   │   └── main.jsx      # Entry point
 │   ├── package.json      # Frontend dependencies
-│   └── vite.config.js    # Vite configuration
-├── server/               # Flask backend
-│   ├── app.py           # Main Flask application
-│   ├── models.py        # Database models
-│   ├── seed.py          # Database seeding
-│   ├── migrations/      # Database migrations
-│   ├── Pipfile          # Python dependencies
-│   ├── Pipfile.lock     # Locked dependencies
-│   └── .venv/           # Virtual environment (pipenv)
-└── README.md
+│   ├── vite.config.js    # Vite configuration
+│   ├── .env              # Development environment variables
+│   └── .env.production   # Production environment variables
+
+FitForge-App-backend/     # Flask backend (separate repository)
+├── app.py               # Main Flask application
+├── models.py            # Database models
+├── seed.py              # Database seeding
+├── migrations/          # Database migrations
+├── Pipfile              # Python dependencies
+├── Pipfile.lock         # Locked dependencies
+└── .venv/               # Virtual environment (pipenv)
 ```
 
 ## Database Models
 
 ### User
-- id, name, email, fitness_level, created_at
+- id, name, password, email, fitness_level, created_at
 - One-to-many with Workout
 - Many-to-many with Exercise (through UserExercise)
 
@@ -90,9 +100,12 @@ FitForge-Workout-Planner/
 
 ### Backend Setup
 
-1. Navigate to the server directory:
+**Note**: The backend is in a separate repository: `FitForge-App-backend`
+
+1. Clone the backend repository:
    ```bash
-   cd server
+   git clone <backend-repo-url>
+   cd FitForge-App-backend
    ```
 
 2. Install pipenv if not already installed:
@@ -119,12 +132,10 @@ FitForge-Workout-Planner/
    ```bash
    pipenv run python app.py
    ```
-   Or use the start script:
-   ```bash
-   ./start.sh
-   ```
 
 The backend will run on `http://localhost:5001` (changed from 5000 to avoid macOS AirPlay conflicts)
+
+**Production Backend**: Already deployed at https://fitforge-app-backend-1.onrender.com
 
 ### Frontend Setup
 
@@ -148,9 +159,9 @@ The frontend will run on `http://localhost:5173`
 ## User Workflow
 
 1. **Landing**: App opens with login/register screen (dark theme by default)
-2. **Authentication**: Users must register (name, email, fitness level) or login to access features
+2. **Authentication**: Users must register (name, password, email, fitness level) or login to access features
 3. **Dashboard**: Once authenticated, users can navigate through all sections
-4. **Community Library**: Browse F1 drivers' profiles, exercise library, and workout plans
+4. **Community Library**: Browse users profiles, exercise library, and workout plans
 5. **Personal Collection**: Add existing exercises/workouts to personal profile with "Add to My Profile" buttons
 6. **Personal Profile**: Private profile showing account details, personal records, and saved workouts
 7. **Profile Management**: Edit profile information, add/remove personal exercises and workouts
@@ -203,20 +214,6 @@ All forms use Formik with Yup validation:
 - **String/Number Format Validation**: Min/max lengths, required fields
 - **Custom Validation**: Fitness levels, categories, muscle groups
 
-## Deployment
-
-### Backend (Render)
-1. Connect your GitHub repository to Render
-2. Set build command: `pip install pipenv && pipenv install --system --deploy`
-3. Set start command: `python app.py`
-4. Add environment variables as needed
-
-### Frontend (Vercel)
-1. Connect your GitHub repository to Vercel
-2. Set root directory to `client-side`
-3. Build command: `npm run build`
-4. Output directory: `dist`
-
 ## Key Features Implemented
 
 ### **Core Requirements (100% Complete)**
@@ -232,27 +229,20 @@ All forms use Formik with Yup validation:
 **Responsive navigation** with hamburger menu
 
 ### **Advanced Features (Bonus)**
-**User authentication system** (register/login/logout)
-**Session management** with Flask sessions
+**Complete authentication system** (register/login/logout with password validation)
+**Session management** with Flask sessions and JWT token support
 **Personal user profiles** with edit functionality
 **Personal collection system** (add/remove exercises and workouts)
-**Community content sharing** (browse other users' content)
 **Database migrations** with Flask-Migrate
 **Modern tech stack** (Flask-RESTful, SQLAlchemy-Serializer)
 **Dark/Light theme toggle** (dark default with green accents)
 **Mobile-first responsive design** with hamburger menu
 **Professional UI/UX** with dark grey/black theme
-**Formula 1 themed content** with real driver profiles
 **Comprehensive error handling** and user feedback
 **Data validation** on both frontend and backend
-
-### **Technical Excellence**
-**Separated concerns** (models.py, proper component structure)
-**Environment management** with Pipenv
-**CORS configuration** for secure API access
-**Proper HTTP status codes** and error responses
-**Clean, maintainable code** with consistent styling
-**Comprehensive documentation**
+**Production deployment** with environment configuration
+**Secure authentication** with credentials and session cookies
+**Request timeout handling** and network error management
 
 ## Performance & Scalability
 
@@ -270,3 +260,29 @@ All forms use Formik with Yup validation:
 - **Exercise Videos**: Integration with exercise demonstration videos
 - **Mobile App**: React Native version for iOS/Android
 - **Advanced Analytics**: Detailed workout and progress analytics
+
+## Authors
+
+- **Wambui Kibathi** - Full-stack development, UI/UX design, deployment, API implementation
+- **Sheiza Jagemi** - Backend development, database design
+
+## Contributing
+
+We welcome contributions to FitForge! Here's how you can help:
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Commit your changes**: `git commit -m 'Add amazing feature'`
+4. **Push to the branch**: `git push origin feature/amazing-feature`
+5. **Open a Pull Request**
+
+### Contribution Guidelines
+- Follow the existing code style and conventions
+- Write clear, descriptive commit messages
+- Add tests for new features
+- Update documentation as needed
+- Ensure all tests pass before submitting
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
