@@ -137,6 +137,8 @@ The backend will run on `http://localhost:5001` (changed from 5000 to avoid macO
 
 **Production Backend**: Already deployed at https://fitforge-app-backend-1.onrender.com
 
+**Backend Repo on GitHub**: https://github.com/Wambui-Kibathi/FitForge-App-backend
+
 ### Frontend Setup
 
 1. Navigate to the client-side directory:
